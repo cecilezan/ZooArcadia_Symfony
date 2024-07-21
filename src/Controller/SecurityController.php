@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -31,8 +30,7 @@ class SecurityController extends AbstractController
     public function __construct(
         private EntityManagerInterface $manager,
         private UserRepository $repository,
-        private SerializerInterface $serializer,
-        private UrlGeneratorInterface $urlGenerator)
+        private SerializerInterface $serializer)
     {
     }
 
@@ -108,6 +106,28 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    #[Route('/registration/list', name: 'showAll', methods: 'GET')]
+    public function showAll(): JsonResponse
+    {
+        $users = $this->repository->findAll();
+        $dataUserList = array();
+        foreach ($users as $user) {
+            $dataUser = $this->serializer->serialize($user, 'json');
+           /* [
+                'id'=> $user->getId(),
+                'name'=> $user->getName(),
+                'prenom'=> $user->getPrenom(),
+                'email'=> $user->getEmail(),
+                'roles'=>$user->getRoles()
+            ]);*/
+            array_push($dataUserList, $dataUser);
+
+        }
+        return new JsonResponse($dataUserList, Response::HTTP_OK);
+
+    }
+
+
     #[Route('/registration/{id}', name: 'show', methods: 'GET')]
     public function show(int $id): JsonResponse
     {
@@ -119,6 +139,8 @@ class SecurityController extends AbstractController
         }
         return new JsonResponse(null, Response::HTTP_NOT_FOUND);
     }
+
+
 
     #[Route('/registration/{id}', name: 'edit', methods: 'PUT')]
     public function edit(int $id, Request $request): JsonResponse
