@@ -17,8 +17,6 @@
 $ symfony check:requirements # To check minimal requirements for the project
 ```
 
-### View
-
 ### Installation
 
 1 . **Register a GPG/SSH Key into your Gitlab/Github account** to push verified commits and registry images.
