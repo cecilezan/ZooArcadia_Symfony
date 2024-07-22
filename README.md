@@ -1,6 +1,6 @@
-# # ZooArcadia-symfony
+# ZooArcadia-symfony
 
-## ## Documentation
+## Documentation
 
 ## Installation instructions
 
